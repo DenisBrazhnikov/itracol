@@ -1,0 +1,18 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}My Collections{% endblock %}
+
+{% block content %}
+    <h1>Create a new Collection</h1>
+
+    <div class="row justify-content-md-center my-4">
+        <div class="col-md-6">
+
+            <div class="border shadow-sm bg-white p-3">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

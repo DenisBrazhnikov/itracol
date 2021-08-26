@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html class="h-100" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    {% block stylesheets %}
+        {# {{ encore_entry_link_tags('app') }} #}
+    {% endblock %}
+
+    {% block javascripts %}
+        {# {{ encore_entry_script_tags('app') }} #}
+    {% endblock %}
+</head>
+
+<body class="d-flex flex-column h-100 bg-light">
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+        <div class="container-fluid">
+            <div class="d-flex flex-grow-1">
+            <span class="w-100 d-lg-none d-block">
+                <!-- hidden spacer to center brand on mobile -->
+            </span>
+                <a class="navbar-brand d-none d-lg-inline-block" href="/">Collections</a>
+
+                <div class="w-100 text-right">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="collapse navbar-collapse flex-grow-1 text-right" id="myNavbar">
+                <ul class="navbar-nav ms-auto flex-nowrap">
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a href="{{ path('user_collections') }}" class="nav-link m-2 menu-item">{{ app.user.email }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('app_logout') }}" class="nav-link m-2 menu-item"><i class="fa fa-sign-out"></i></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{ path('app_login') }}" class="nav-link m-2 menu-item">Sign In</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link m-2 menu-item">Sing Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="flex-shrink-0">
+    <div class="container pt-3">
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container-fluid">
+        {% block footer %}Footer{% endblock %}
+    </div>
+</footer>
+
+</body>
+</html>

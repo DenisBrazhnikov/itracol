@@ -1,0 +1,36 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Sign In{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-md-center my-4">
+        <div class="col-md-5">
+            <div class="bg-white p-4 mb-4 border rounded">
+                <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    <h3 class="h3 font-weight-normal text-center mb-4">Sign In</h3>
+
+                    <input type="email" value="{{ last_username }}" name="email" class="form-control mb-3"
+                           autocomplete="email" required placeholder="Email" autofocus>
+                    <input type="password" name="password" class="form-control mb-3" placeholder="Password"
+                           autocomplete="current-password" required>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <button class="btn btn-primary w-100" type="submit">
+                        Sign in
+                    </button>
+
+                    <hr>
+
+                    <div class="text-center">
+                        Don't have an account yet? <a href="/join">Join us here</a>.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
