@@ -19,26 +19,46 @@ class UserCollectionRepository extends ServiceEntityRepository
         parent::__construct($registry, UserCollection::class);
     }
 
-
-    public function getWithMostEntities()
+    /**
+     * @return array
+     */
+    public function getCollectionsWithMostItems()
     {
-        return $this->createQueryBuilder('u')
-            ->where('u.id = 1')
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
+        $results = $this->createQueryBuilder('c')
+            ->select('c')
+            ->innerJoin('c.items', 'i')
+            ->addSelect('COUNT(i.id) AS items_count')
+            ->innerJoin('c.topic', 't')
+            ->addSelect('t')
+            ->groupBy('i.collection')
+            ->orderBy('items_count', 'DESC')
+            ->setMaxResults(8)
             ->getQuery()
             ->getResult();
+
+        $collections = [];
+
+        foreach ($results as $result) {
+            $collection = $result[0];
+            $collection->items_count = $result['items_count'];
+
+            $collections[] = $collection;
+        }
+
+        return $collections;
     }
 
-    /*
-    public function findOneBySomeField($value): ?UserCollection
+    public function getCollectionFull($id)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('c')
+            ->select('c')
+            ->innerJoin('c.items', 'i')
+            ->addSelect('i')
+            ->innerJoin('c.topic', 't')
+            ->addSelect('t')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
 }

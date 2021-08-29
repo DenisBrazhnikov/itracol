@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Item;
 use App\Entity\UserCollection;
 use App\Form\ItemType;
 use App\Form\UserCollectionType;
@@ -41,7 +42,7 @@ class CollectionsController extends AbstractController
             $em->persist($collection);
             $em->flush();
 
-            return $this->redirectToRoute('user_collections');
+            return $this->redirectToRoute('user_collections.show', ['id' => $collection->getId()]);
         }
 
         return $this->render('user/collections/create.html.twig', [
@@ -51,15 +52,13 @@ class CollectionsController extends AbstractController
 
     /**
      * @Route("/user/collections/{id}/edit", name="user_collections.edit")
+     * @param UserCollection $collection
+     * @param Request $request
+     * @return Response
      */
-    public function edit(int $id, Request $request): Response
+    public function edit(UserCollection $collection, Request $request): Response
     {
-        $collection = $this->getDoctrine()
-            ->getRepository(UserCollection::class)
-            ->findOneBy(['id' => $id, 'user' => $this->getUser()]);
-
-        if (!$collection)
-            throw $this->createNotFoundException('The collection does not exist');
+        $this->checkPermissions($collection);
 
         $form = $this->createForm(UserCollectionType::class, $collection);
 
@@ -81,31 +80,53 @@ class CollectionsController extends AbstractController
 
     /**
      * @Route("/user/collections/{id}/editItems", name="user_collections.editItems")
+     * @param int $id
+     * @param Request $request
+     * @return Response
      */
     public function editItems(int $id, Request $request): Response
     {
-        $collection = $this->getDoctrine()
+        $collection = $this
+            ->getDoctrine()
             ->getRepository(UserCollection::class)
-            ->findOneBy(['id' => $id, 'user' => $this->getUser()]);
+            ->getCollectionFull($id);
 
-        if (!$collection)
-            throw $this->createNotFoundException('The collection does not exist');
+        $this->checkPermissions($collection);
 
-        $form = $this->createForm(UserCollectionType::class, $collection);
+        return $this->render('user/collections/edit-items.html.twig', compact('collection'));
+    }
 
-        $form->handleRequest($request);
+    /**
+     * @Route("/user/collections/{id}/removeItem", name="user_collections.removeItem", methods={"POST"})
+     * @param UserCollection $collection
+     * @param Request $request
+     * @return Response
+     */
+    public function removeItem(UserCollection $collection, Request $request): Response
+    {
+        $this->checkPermissions($collection);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        $item = $this->getDoctrine()->getRepository(Item::class)->find($request->get('item_id'));
 
-            $em->persist($collection);
-            $em->flush();
-
-            return $this->redirectToRoute('user_collections');
+        if (!$item) {
+            throw $this->createNotFoundException('No such item');
         }
 
-        return $this->render('user/collections/edit-items.html.twig', [
-            'form' => $form->createView(),
+        if ($item->getCollection() !== $collection)
+            throw $this->createAccessDeniedException('You have no permission to edit this collection');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($item);
+        $em->flush();
+
+        return $this->redirectToRoute('user_collections.editItems', [
+            'id' => $collection->getId()
         ]);
+    }
+
+    private function checkPermissions(UserCollection $collection)
+    {
+        if ($collection->getUser() !== $this->getUser())
+            throw $this->createAccessDeniedException('You have no permission to edit this collection');
     }
 }

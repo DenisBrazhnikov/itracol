@@ -1,7 +1,46 @@
 {% extends 'app.html.twig' %}
 
 {% block content %}
-<div>
+    <h3>Top Collections:</h3>
 
-</div>
+    <div class="row mt-4">
+        {% for collection in collections %}
+            <div class="col-md-3 mb-4">
+                <a href="{{ path('collections.show', {id: collection.id}) }}"
+                   class="text-reset">
+                    <div class="bg-dark text-white p-3 rounded d-flex flex-column h-100">
+                        <div class="fs-5 fw-500">{{ collection.name }}</div>
+                        <div class="mt-2 mb-3 text-muted">{{ collection.description }}</div>
+                        <div class="mt-auto">
+                            <span class="badge bg-light text-dark">{{ collection.topic.name }}</span>
+                            <span class="badge bg-light text-dark">
+                                <i class="fa fa-tags"></i> {{ collection.items_count }}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% else %}
+            <div>No added collections yet ;(</div>
+        {% endfor %}
+    </div>
+
+    <h3>Latest items:</h3>
+
+    <div class="row mt-4">
+        {% for item in items %}
+            <div class="col-md-2 mb-4">
+                <a href="" class="text-reset">
+                    <div class="bg-dark text-white p-3 rounded d-flex flex-column h-100">
+                        <div class="fs-5 fw-500">{{ item.name }}</div>
+                        <div class="mt-auto">
+                            <span class="text-muted">{{ item.collection.name }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% else %}
+            <div>No added items yet ;(</div>
+        {% endfor %}
+    </div>
 {% endblock %}

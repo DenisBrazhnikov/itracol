@@ -1,18 +1,62 @@
 {% extends 'app.html.twig' %}
 
-{% block title %}My Collections{% endblock %}
+{% block title %}{{ collection.name }}{% endblock %}
 
 {% block content %}
-    <h1>Edit</h1>
+    <h1>{{ collection.name }}</h1>
 
-    <div class="row justify-content-md-center my-4">
-        <div class="col-md-6">
+    <span class="badge bg-primary d-inline-block">{{ collection.topic.name }}</span>
 
-            <div class="border shadow-sm bg-white p-3">
-                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                {{ form_widget(form) }}
-                {{ form_end(form) }}
+    <div class="mt-2">
+        <div class="fw-bold">Description:</div>
+        {{ collection.description|e|markdown|raw }}
+    </div>
+
+    <div class="mt-2">
+        <div class="fw-bold">Items:</div>
+        {% for item in collection.items %}
+            <div>{{ item.name }}
+                <button type="button" class="btn btn-danger btn-xs" data-bs-toggle="modal" data-bs-target="#deleteItemModal"
+                        data-bs-name="{{ item.name }}"
+                        data-bs-id="{{ item.id }}">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="deleteItemModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirm Delete</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete item: <b id="item-name"></b></p>
+                </div>
+                <div class="modal-footer">
+                    <form method="post" class="form-inline" id="deleteItemModalForm" action="{{ path('user_collections.removeItem', {id: collection.id }) }}">
+                        <input type="hidden" name="item_id" id="item-id">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-trash"></i> Delete
+                        </button>
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var deleteModal = document.getElementById('deleteItemModal')
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            deleteModal.querySelector('#item-id').value = button.getAttribute('data-bs-id');
+            deleteModal.querySelector('#item-name').textContent = button.getAttribute('data-bs-name');
+        })
+    </script>
 {% endblock %}

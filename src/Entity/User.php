@@ -6,11 +6,13 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -127,44 +129,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @ORM\OneToMany(targetEntity=UserCollection::class, mappedBy="User")
-     */
-    private $userCollections;
-
-    /**
      * @ORM\OneToMany(targetEntity=UserCollection::class, mappedBy="user", orphanRemoval=true)
      */
     private $collections;
-
-    public function __construct()
-    {
-        $this->collections = new ArrayCollection();
-    }
 
     /**
      * @return UserCollection|UserCollection[]
      */
     public function getUserCollections(): UserCollection
     {
-        return $this->userCollections;
+        return $this->collections;
     }
 
-    public function addCollection(UserCollection $userCollection): self
+    public function addCollection(UserCollection $collection): self
     {
-        if (!$this->userCollections->contains($userCollection)) {
-            $this->$userCollection[] = $userCollection;
-            $userCollection->setUser($this);
+        if (!$this->collections->contains($collection)) {
+            $this->$collection[] = $collection;
+            $collection->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeCollection(UserCollection $userCollection): self
+    public function removeCollection(UserCollection $collection): self
     {
-        if ($this->userCollections->removeElement($userCollection)) {
+        if ($this->collections->removeElement($collection)) {
             // set the owning side to null (unless already changed)
-            if ($userCollection->getUser() === $this) {
-                $userCollection->setUser(null);
+            if ($collection->getUser() === $this) {
+                $collection->setUser(null);
             }
         }
 
