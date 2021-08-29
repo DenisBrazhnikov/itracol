@@ -440,36 +440,36 @@ class UserCollection
         return $this;
     }
 
-    public function getText1Name(): ?text
+    public function getText1Name(): ?string
     {
         return $this->text1_name;
     }
 
-    public function setText1Name(?text $text1_name): self
+    public function setText1Name(?string $text1_name): self
     {
         $this->text1_name = $text1_name;
 
         return $this;
     }
 
-    public function getText2Name(): ?text
+    public function getText2Name(): ?string
     {
         return $this->text2_name;
     }
 
-    public function setText2Name(?text $text2_name): self
+    public function setText2Name(?string $text2_name): self
     {
         $this->text2_name = $text2_name;
 
         return $this;
     }
 
-    public function getText3Name(): ?text
+    public function getText3Name(): ?string
     {
         return $this->text3_name;
     }
 
-    public function setText3Name(?text $text3_name): self
+    public function setText3Name(?string $text3_name): self
     {
         $this->text3_name = $text3_name;
 
