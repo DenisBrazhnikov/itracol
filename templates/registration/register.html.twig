@@ -1,0 +1,39 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-md-center my-4">
+        <div class="col-md-5">
+            <div class="bg-white p-4 mb-4 border rounded">
+                <h3 class="h3 font-weight-normal text-center mb-4">Sign Up</h3>
+
+                {{ form_start(registrationForm) }}
+
+                {{ form_row(registrationForm.email, {
+                    attr: {
+                        class: "form-control mb-3",
+                        placeholder: "Email",
+                        autofocus: true
+                    },
+                    label: false
+                }) }}
+                {{ form_row(registrationForm.plainPassword, {
+                    attr: {
+                        class: "form-control mb-3",
+                        placeholder: "Password",
+                    },
+                    label: false
+                }) }}
+                {{ form_row(registrationForm.agreeTerms, {
+                    row_attr: { class: "form-check mb-3" },
+                    attr: {class: "form-check-input"}
+                }) }}
+
+                <button class="btn btn-primary w-100" type="submit">Register</button>
+
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
