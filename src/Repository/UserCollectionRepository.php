@@ -26,9 +26,9 @@ class UserCollectionRepository extends ServiceEntityRepository
     {
         $results = $this->createQueryBuilder('c')
             ->select('c')
-            ->innerJoin('c.items', 'i')
+            ->leftJoin('c.items', 'i')
             ->addSelect('COUNT(i.id) AS items_count')
-            ->innerJoin('c.topic', 't')
+            ->leftJoin('c.topic', 't')
             ->addSelect('t')
             ->groupBy('i.collection')
             ->orderBy('items_count', 'DESC')
@@ -52,9 +52,9 @@ class UserCollectionRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->select('c')
-            ->innerJoin('c.items', 'i')
+            ->leftJoin('c.items', 'i')
             ->addSelect('i')
-            ->innerJoin('c.topic', 't')
+            ->leftJoin('c.topic', 't')
             ->addSelect('t')
             ->where('c.id = :id')
             ->setParameter('id', $id)
