@@ -42,7 +42,7 @@ class CollectionsController extends AbstractController
             $em->persist($collection);
             $em->flush();
 
-            return $this->redirectToRoute('user_collections.show', ['id' => $collection->getId()]);
+            return $this->redirectToRoute('collections.show', ['id' => $collection->getId()]);
         }
 
         return $this->render('user/collections/create.html.twig', [
