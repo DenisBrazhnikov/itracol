@@ -63,7 +63,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                     form(form, { 'action': path('user_collections.addItem', {id: collection.id }) })
+                     {{ form(form, { 'action': path('user_collections.addItem', {id: collection.id }) }) }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
