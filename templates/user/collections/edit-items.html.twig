@@ -3,14 +3,6 @@
 {% block title %}{{ collection.name }}{% endblock %}
 
 {% block content %}
-
-    {{ form_start(form) }}
-    {{ form_row(form.name) }}
-
-    <h3>Tags</h3>
-    <ul class="tags" data-prototype="{{ form_widget(form.tags.vars.prototype)|e('html_attr') }}"></ul>
-    {{ form_end(form) }}
-
     <h1>{{ collection.name }}</h1>
 
     <span class="badge bg-primary d-inline-block">{{ collection.topic.name }}</span>
