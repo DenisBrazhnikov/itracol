@@ -3,6 +3,14 @@
 {% block title %}{{ collection.name }}{% endblock %}
 
 {% block content %}
+
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+
+    <h3>Tags</h3>
+    <ul class="tags" data-prototype="{{ form_widget(form.tags.vars.prototype)|e('html_attr') }}"></ul>
+    {{ form_end(form) }}
+
     <h1>{{ collection.name }}</h1>
 
     <span class="badge bg-primary d-inline-block">{{ collection.topic.name }}</span>
@@ -14,15 +22,20 @@
 
     <div class="mt-2">
         <div class="fw-bold">Items:</div>
-        {% for item in collection.items %}
-            <div>{{ item.name }}
-                <button type="button" class="btn btn-danger btn-xs" data-bs-toggle="modal" data-bs-target="#deleteItemModal"
-                        data-bs-name="{{ item.name }}"
-                        data-bs-id="{{ item.id }}">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
-        {% endfor %}
+        <button type="button" class="btn btn-primary btn-xs" data-bs-toggle="modal"
+                data-bs-target="#addItemModal">
+            Add new Item
+        </button>
+
+        <div class="row mt-4">
+            {% for item in collection.items %}
+                {% include 'items/item-fragment.html.twig' with {
+                    'item': item, 'collection': collection, 'edit': true
+                } only %}
+            {% else %}
+                No items added yet
+            {% endfor %}
+        </div>
     </div>
 
     <div id="deleteItemModal" class="modal fade" role="dialog">
@@ -36,7 +49,8 @@
                     <p>Are you sure you want to delete item: <b id="item-name"></b></p>
                 </div>
                 <div class="modal-footer">
-                    <form method="post" class="form-inline" id="deleteItemModalForm" action="{{ path('user_collections.removeItem', {id: collection.id }) }}">
+                    <form method="post" class="form-inline" id="deleteItemModalForm"
+                          action="{{ path('user_collections.removeItem', {id: collection.id }) }}">
                         <input type="hidden" name="item_id" id="item-id">
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                         <button type="submit" class="btn btn-danger">
@@ -44,6 +58,23 @@
                         </button>
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addItemModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add new item</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                     form(form, { 'action': path('user_collections.addItem', {id: collection.id }) })
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>

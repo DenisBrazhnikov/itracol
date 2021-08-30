@@ -28,7 +28,22 @@ class ItemRepository extends ServiceEntityRepository
             ->innerJoin('c.topic', 't')
             ->addSelect('t')
             ->setMaxResults(12)
+            ->orderBy('i.id', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getItemFull($id)
+    {
+        return $this->createQueryBuilder('i')
+            ->select('i')
+            ->innerJoin('i.collection', 'c')
+            ->addSelect('c')
+            ->innerJoin('c.topic', 't')
+            ->addSelect('t')
+            ->where('i.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

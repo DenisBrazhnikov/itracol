@@ -29,16 +29,9 @@
 
     <div class="row mt-4">
         {% for item in items %}
-            <div class="col-md-2 mb-4">
-                <a href="" class="text-reset">
-                    <div class="bg-dark text-white p-3 rounded d-flex flex-column h-100">
-                        <div class="fs-5 fw-500">{{ item.name }}</div>
-                        <div class="mt-auto">
-                            <span class="text-muted">{{ item.collection.name }}</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
+            {% include 'items/item-fragment.html.twig' with {
+                'item': item, 'collection': item.collection, 'edit': false
+            } only %}
         {% else %}
             <div>No added items yet ;(</div>
         {% endfor %}

@@ -1,0 +1,27 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ item.name }}{% endblock %}
+
+{% block content %}
+    <h1>{{ item.name }}</h1>
+    from <a href="{{ path('collections.show', {id: item.collection.id}) }}">{{ item.collection.name }}</a>
+    <br>
+
+    <span class="badge bg-primary d-inline-block">{{ item.collection.topic.name }}</span>
+
+    {% for field in item.collection.getExtraFields() %}
+        {% for number in [1, 2, 3] %}
+            {% if item.collection.getExtraFieldVisibility(field, number) %}
+                <div>
+                    <b>{{ item.collection.getExtraFieldName(field, number) }}</b> :
+                    {% if field == 'text' %}
+                        <div>{{ item.getExtraFieldValue(field, number)|e|markdown|raw }}</div>
+                    {% else %}
+                        {{ item.getExtraFieldValue(field, number) }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}

@@ -6,6 +6,7 @@ use App\Repository\UserCollectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 
 /**
  * @ORM\Entity(repositoryClass=UserCollectionRepository::class)
@@ -654,5 +655,24 @@ class UserCollection
         $this->boolean3_visible = $boolean3_visible;
 
         return $this;
+    }
+
+    public function getExtraFields()
+    {
+        return ['integer', 'string', 'text', 'date', 'boolean'];
+    }
+
+    public function getExtraFieldName($name, $key): string
+    {
+        if (in_array($name, $this->getExtraFields()) && in_array($key, [1, 2, 3]))
+            return $this->{$name . $key . '_name'};
+        else throw new NoSuchPropertyException();
+    }
+
+    public function getExtraFieldVisibility($name, $key): bool
+    {
+        if (in_array($name, $this->getExtraFields()) && in_array($key, [1, 2, 3]))
+            return $this->{$name . $key . '_visible'};
+        else throw new NoSuchPropertyException();
     }
 }

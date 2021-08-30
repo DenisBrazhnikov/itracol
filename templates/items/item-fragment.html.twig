@@ -1,0 +1,27 @@
+<div class="col-md-2 mb-4">
+    <div class="bg-dark text-white p-3 rounded d-flex flex-column h-100">
+        <div class="fs-5 fw-500">
+            <a href="{{ path('items.show', { id: item.id }) }}" class="text-reset">
+                {{ item.name }}
+            </a>
+        </div>
+
+        {% if edit %}
+            <div class="d-flex justify-content-between mt-2">
+                <button type="button" class="btn btn-success btn-xs" data-bs-toggle="modal"
+                        data-bs-target="#deleteItemModal"
+                        data-bs-name="{{ item.name }}"
+                        data-bs-id="{{ item.id }}">
+                    <i class="fa fa-pencil"></i>
+                </button>
+
+                <button type="button" class="btn btn-danger btn-xs" data-bs-toggle="modal"
+                        data-bs-target="#deleteItemModal"
+                        data-bs-name="{{ item.name }}"
+                        data-bs-id="{{ item.id }}">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>

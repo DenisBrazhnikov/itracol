@@ -74,6 +74,7 @@ class CollectionsController extends AbstractController
         }
 
         return $this->render('user/collections/edit.html.twig', [
+            'collection' => $collection,
             'form' => $form->createView(),
         ]);
     }
@@ -93,7 +94,42 @@ class CollectionsController extends AbstractController
 
         $this->checkPermissions($collection);
 
-        return $this->render('user/collections/edit-items.html.twig', compact('collection'));
+        $form = $this->createForm(ItemType::class, new Item(), compact('collection'));
+
+        return $this->render('user/collections/edit-items.html.twig', [
+            'collection' => $collection,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/user/collections/{id}/addItem", name="user_collections.addItem", methods={"POST"})
+     * @param UserCollection $collection
+     * @param Request $request
+     * @return Response
+     */
+    public function addItem(UserCollection $collection, Request $request): Response
+    {
+        $this->checkPermissions($collection);
+
+        $item = new Item();
+
+        $form = $this->createForm(ItemType::class, $item, compact('collection'));
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $item->setCollection($collection);
+
+            $em->persist($item);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('user_collections.editItems', [
+            'id' => $collection->getId()
+        ]);
     }
 
     /**

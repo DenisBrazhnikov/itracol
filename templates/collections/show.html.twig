@@ -28,8 +28,15 @@
                 </a>
             </div>
         {% endif %}
-        {% for item in collection.items %}
-            {{ item.name }}
-        {% endfor %}
+
+        <div class="row mt-4">
+            {% for item in collection.items %}
+                {% include 'items/item-fragment.html.twig' with {
+                    'item': item, 'collection': collection, 'edit': false
+                } only %}
+            {% else %}
+                No items added yet
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
